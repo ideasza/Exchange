@@ -1,0 +1,12 @@
+eclipse.preferences.version=1
+encoding//src/dev/teerayut/main/MainActivity.java=UTF-8
+encoding//src/dev/teerayut/main/MainPresenter.java=UTF-8
+encoding//src/dev/teerayut/receipt/Receive.java=UTF-8
+encoding//src/dev/teerayut/report/ReportActivity.java=UTF-8
+encoding//src/dev/teerayut/report/ReportPresenter.java=UTF-8
+encoding//src/dev/teerayut/settings/SettingsActivity.java=UTF-8
+encoding//src/dev/teerayut/settings/SettingsPresenter.java=UTF-8
+encoding//src/dev/teerayut/show/showCurrencyActivity.java=UTF-8
+encoding//src/dev/teerayut/update/updateCurrencyActivity.java=UTF-8
+encoding//src/dev/teerayut/update/updateCurrencyPresenter.java=UTF-8
+encoding//src/dev/teerayut/utils/Preferrence.java=UTF-8
