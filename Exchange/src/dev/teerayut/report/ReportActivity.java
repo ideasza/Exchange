@@ -199,13 +199,13 @@ public class ReportActivity extends JDialog implements ReportInterface.viewInter
 			currentYear = currentYear - subtractYearValue;
 		}
 
-		Locale locale = new Locale("en", "EN");
+		//Locale locale = new Locale("en", "EN");
 		
 		calendar.set(currentYear , currentMonth , currentDate);
 		date.setTime(calendar.getTimeInMillis());
 		
 		JDateChooser dateChooser = new JDateChooser();
-		dateChooser.setLocale(locale);
+		//dateChooser.setLocale(locale);
 		dateChooser.setDateFormatString("yyyy-MM-dd");
 		dateChooser.setBounds(0, 0, 200, 41);
 		dateChooser.setPreferredSize(new java.awt.Dimension(200, 35));
