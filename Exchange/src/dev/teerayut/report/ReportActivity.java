@@ -31,6 +31,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.toedter.calendar.JDateChooser;
 
 import dev.teerayut.model.ReceiptModel;
@@ -198,30 +200,35 @@ public class ReportActivity extends JDialog implements ReportInterface.viewInter
 		if (currentYear > 2500) {
 			currentYear = currentYear - subtractYearValue;
 		}
-
-		//Locale locale = new Locale("en", "EN");
 		
 		calendar.set(currentYear , currentMonth , currentDate);
 		date.setTime(calendar.getTimeInMillis());
 		
-		JDateChooser dateChooser = new JDateChooser();
-		//dateChooser.setLocale(locale);
+		/*JDateChooser dateChooser = new JDateChooser();
 		dateChooser.setDateFormatString("yyyy-MM-dd");
 		dateChooser.setBounds(0, 0, 200, 41);
 		dateChooser.setPreferredSize(new java.awt.Dimension(200, 35));
 		toolPanel.add(dateChooser);
 		dateChooser.setFont(new Font("Angsana New", Font.PLAIN, 30));
+		dateChooser.setDate(date);*/
 		
-		dateChooser.setDate(date);
+		DatePickerSettings dateSettings = new DatePickerSettings();
+		dateSettings.setFormatForDatesCommonEra("yyyy-MM-dd");
+		DatePicker datePicker1 = new DatePicker(dateSettings);
+		datePicker1.setDateToToday();
+		datePicker1.setBounds(0, 0, 200, 41);
+		datePicker1.setPreferredSize(new java.awt.Dimension(200, 35));
+		toolPanel.add(datePicker1);
+		datePicker1.setFont(new Font("Angsana New", Font.PLAIN, 30));
 		
-		int offset = (int) dateChooser.getSize().getWidth() + 10;
+		int offset = (int) datePicker1.getSize().getWidth() + 10;
 		JButton buttonReport = new JButton("โหลดรายงาน");
 		buttonReport.setBounds(210, 0, 200, 40);
 		buttonReport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String dateFromDateChooser = sdf.format(dateChooser.getDate());
-				dateReport = dateFromDateChooser;
-				present.getReport(dateFromDateChooser);
+				JOptionPane.showMessageDialog(ReportActivity.this, datePicker1.getDate());
+				/*dateReport = dateFromDateChooser;
+				present.getReport(dateFromDateChooser);*/
 			}
 		});
 		toolPanel.add(buttonReport);

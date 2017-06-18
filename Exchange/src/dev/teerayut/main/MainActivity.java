@@ -189,7 +189,7 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 				} else {
 					prefs.setPreferrence("settings_open", "0");
 					edit.setEnabled(false);
-	                report.setEnabled(false);
+	                //report.setEnabled(false);
 	                lblSource.setText(" jdbc:sqlite: Disconnect");
 	                lblSource.setIcon(new ImageIcon(getClass().getResource("/icon/database_not_connect.png")));
 					final ImageIcon icon = new ImageIcon(getClass().getResource("/icon/warning.png"));
