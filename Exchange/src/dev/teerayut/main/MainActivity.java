@@ -57,7 +57,6 @@ import javax.swing.table.JTableHeader;
 
 import dev.teerayut.model.CalculateModel;
 import dev.teerayut.model.CurrencyModel;
-import dev.teerayut.model.KeyModel;
 import dev.teerayut.report.ReportActivity;
 import dev.teerayut.settings.SettingsActivity;
 import dev.teerayut.show.showCurrencyActivity;

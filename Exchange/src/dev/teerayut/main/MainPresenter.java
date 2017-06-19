@@ -8,7 +8,6 @@ import java.util.List;
 
 import dev.teerayut.connection.ConnectionDB;
 import dev.teerayut.model.CalculateModel;
-import dev.teerayut.model.KeyModel;
 import dev.teerayut.receipt.Receive;
 import dev.teerayut.utils.DateFormate;
 
@@ -19,7 +18,6 @@ public class MainPresenter implements MainInterface.presentInterface {
 	private ConnectionDB connectionDB;
 	private MainInterface.viewInterface view;
 	
-	private KeyModel keyModel;
 	private List<CalculateModel> calList = new ArrayList<CalculateModel>();
 	
 	public MainPresenter(MainInterface.viewInterface view) {
