@@ -1,5 +1,8 @@
 package dev.teerayut.receipt;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 public class PrinterOptionsClass {
 
     String commandSet = "";
@@ -221,5 +224,5 @@ public class PrinterOptionsClass {
 
         //Return the string
         return sb.toString();
-    }
+    }    
 }

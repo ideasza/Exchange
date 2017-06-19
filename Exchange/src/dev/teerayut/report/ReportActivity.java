@@ -226,9 +226,9 @@ public class ReportActivity extends JDialog implements ReportInterface.viewInter
 		buttonReport.setBounds(210, 0, 200, 40);
 		buttonReport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(ReportActivity.this, datePicker1.getDate());
-				/*dateReport = dateFromDateChooser;
-				present.getReport(dateFromDateChooser);*/
+				//JOptionPane.showMessageDialog(ReportActivity.this, datePicker1.getDate());
+				dateReport = datePicker1.getDate().toString();
+				present.getReport(dateReport);
 			}
 		});
 		toolPanel.add(buttonReport);

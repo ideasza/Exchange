@@ -6,13 +6,10 @@ import java.util.List;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
-import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.print.SimpleDoc;
 import javax.print.attribute.AttributeSet;
-import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.HashPrintServiceAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrinterName;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -110,8 +107,8 @@ public class Receive {
             AttributeSet attrSet = new HashPrintServiceAttributeSet(new PrinterName(printerName, null));
             DocPrintJob job = PrintServiceLookup.lookupPrintServices(null, attrSet)[0].createPrintJob();
 	        DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
-	        //byte[] bytes = p.getBytes("TIS620");
-	        byte[] bytes = p.getBytes("CP437");
+	        byte[] bytes = p.getBytes("TIS-620");
+	        //byte[] bytes = p.getBytes("CP437");
 	        Doc doc = new SimpleDoc(bytes, flavor, null);
 	        System.out.println(job);
 	        job.print(doc, null);
@@ -126,5 +123,5 @@ public class Receive {
 	        return false;
 	    }
 	        return true;
-    }	  
+    }	
 }

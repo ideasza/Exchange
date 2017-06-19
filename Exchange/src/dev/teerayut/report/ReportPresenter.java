@@ -77,6 +77,7 @@ public class ReportPresenter implements ReportInterface.presentInterface{
 	@Override
 	public void exportToExcel(String date, List<ReceiptModel> listReport) {
 		File file = new File(Config.REPORT_PATH);
+		File fileReport = null;
 		if (!file.exists()) {
 			 if (file.mkdirs()) {
 				 fileName = Config.REPORT_PATH + date + ".xls";
@@ -84,6 +85,8 @@ public class ReportPresenter implements ReportInterface.presentInterface{
 		    	final ImageIcon icon = new ImageIcon(getClass().getResource("/icon/fail32.png"));
 		    	JOptionPane.showMessageDialog(null, "ไม่สามารถสร้างโพลเดอร์ได้", "Alert", JOptionPane.ERROR_MESSAGE, icon);
 		    }
+		} else {
+			fileName = Config.REPORT_PATH + date + ".xls";
 		}
 		
 		try {
@@ -91,7 +94,7 @@ public class ReportPresenter implements ReportInterface.presentInterface{
 			
 			//*** Create Font ***//
 			WritableFont fontHeader = new WritableFont(WritableFont.TIMES, 14);
-			fontHeader.setColour(Colour.WHITE);
+			fontHeader.setColour(Colour.BLACK);
 			
 			WritableFont fontReport = new WritableFont(WritableFont.TIMES, 12);
 			fontReport.setColour(Colour.BLACK);
@@ -102,8 +105,7 @@ public class ReportPresenter implements ReportInterface.presentInterface{
             WritableCellFormat cellFormat1 = new WritableCellFormat(fontHeader);
             cellFormat1.setAlignment(Alignment.CENTRE);
             cellFormat1.setVerticalAlignment(VerticalAlignment.CENTRE);
-            cellFormat1.setBorder(Border.ALL, BorderLineStyle.THIN);
-            cellFormat1.setBackground(Colour.LIGHT_ORANGE);
+            cellFormat1.setBackground(Colour.WHITE);
             
             //*** Data ***//
             WritableCellFormat cellFormat2 = new WritableCellFormat(fontReport);
@@ -128,31 +130,34 @@ public class ReportPresenter implements ReportInterface.presentInterface{
     	    cellFormat4.setAlignment(jxl.format.Alignment.RIGHT);
     	    cellFormat4.setVerticalAlignment(VerticalAlignment.CENTRE);
             
-    	    ws1.mergeCells(0, 0, 6, 0);
+    	    ws1.mergeCells(0, 0, 7, 0);
     	    Label lable = new Label(0, 0,"Report " + date, cellFormat1);
     	    ws1.addCell(lable);
     	    
     	    //*** Header ***//
     	    ws1.setColumnView(0, 8); // Column CustomerID
-    	    ws1.addCell(new Label(0,1,"No.",cellFormat1));
+    	    ws1.addCell(new Label(0,1,"No.", cellFormat1));
     	    
-    	    ws1.setColumnView(1, 25); // Column Name
-    	    ws1.addCell(new Label(1,1,"Currency",cellFormat1));
+    	    ws1.setColumnView(1, 20); // Column Name
+    	    ws1.addCell(new Label(1,1,"Currency", cellFormat1));
     	    
     	    ws1.setColumnView(2, 10); // Column Email
-    	    ws1.addCell(new Label(2,1,"Buy rate",cellFormat1));
+    	    ws1.addCell(new Label(2,1,"Buy rate", cellFormat1));
     	    
     	    ws1.setColumnView(3, 10); // Column CountryCode
-    	    ws1.addCell(new Label(3,1,"Sell rate",cellFormat1));
+    	    ws1.addCell(new Label(3,1,"Sell rate", cellFormat1));
     	    
-    	    ws1.setColumnView(4, 12); // Column Budget
-    	    ws1.addCell(new Label(4,1,"Amount buy",cellFormat1));
+    	    ws1.setColumnView(4, 14); // Column Budget
+    	    ws1.addCell(new Label(4,1,"Amount buy", cellFormat1));
     	    
-    	    ws1.setColumnView(5, 12); // Column Used
-    	    ws1.addCell(new Label(5,1,"Amount sell",cellFormat1));
+    	    ws1.setColumnView(5, 14); // Column Used
+    	    ws1.addCell(new Label(5,1,"Amount sell", cellFormat1));
     	    
     	    ws1.setColumnView(6, 20); // Column Used
-    	    ws1.addCell(new Label(6,1,"Total",cellFormat1));
+    	    ws1.addCell(new Label(6,1,"Total", cellFormat1));
+    	    
+    	    ws1.setColumnView(7, 20);
+    	    ws1.addCell(new Label(6,1,"Note", cellFormat1));
     	    
     	    for (int i = 0; i < listReport.size(); i++) {
     	    	ReceiptModel m = listReport.get(i);

@@ -100,6 +100,7 @@ public class MainPresenter implements MainInterface.presentInterface {
 			if (is == 1) {
 				new Receive().printReceipt(calList);
 				view.onSuccess("บันทึกรายการซื้อขายแล้ว");
+				calculateList.clear();
 			} else {
 				view.onFail("ไม่สามารถบันทึกข้อมูลได้");
 			}
