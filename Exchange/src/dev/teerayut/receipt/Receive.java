@@ -107,8 +107,8 @@ public class Receive {
             AttributeSet attrSet = new HashPrintServiceAttributeSet(new PrinterName(printerName, null));
             DocPrintJob job = PrintServiceLookup.lookupPrintServices(null, attrSet)[0].createPrintJob();
 	        DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
-	        byte[] bytes = p.getBytes("TIS-620");
-	        //byte[] bytes = p.getBytes("CP437");
+	        //byte[] bytes = p.getBytes("TIS-620");
+	        byte[] bytes = p.getBytes("CP874");
 	        Doc doc = new SimpleDoc(bytes, flavor, null);
 	        System.out.println(job);
 	        job.print(doc, null);
