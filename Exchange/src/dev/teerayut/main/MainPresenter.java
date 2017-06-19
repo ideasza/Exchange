@@ -2,11 +2,13 @@ package dev.teerayut.main;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import dev.teerayut.connection.ConnectionDB;
 import dev.teerayut.model.CalculateModel;
+import dev.teerayut.model.KeyModel;
 import dev.teerayut.receipt.Receive;
 import dev.teerayut.utils.DateFormate;
 
@@ -17,6 +19,7 @@ public class MainPresenter implements MainInterface.presentInterface {
 	private ConnectionDB connectionDB;
 	private MainInterface.viewInterface view;
 	
+	private KeyModel keyModel;
 	private List<CalculateModel> calList = new ArrayList<CalculateModel>();
 	
 	public MainPresenter(MainInterface.viewInterface view) {
@@ -78,8 +81,8 @@ public class MainPresenter implements MainInterface.presentInterface {
 		StringBuilder sb = new StringBuilder();
 		sb.delete(0, sb.length());
 		
-		sb.append("INSERT INTO RECEIPT (RC_DATE, RC_NAME, RC_RATE, RC_AMOUNT, RC_TOTAL, RC_TYPE, RC_CREATED_DATE) ");
-		sb.append("VALUES (?, ?, ?, ?, ?, ?, ?)");
+		sb.append("INSERT INTO RECEIPT (RC_DATE, RC_NAME, RC_RATE, RC_AMOUNT, RC_TOTAL, RC_TYPE, RC_CREATED_DATE, RC_NO) ");
+		sb.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 		
 		System.out.println(sb.toString());
 		connectionDB = new ConnectionDB();
@@ -95,6 +98,7 @@ public class MainPresenter implements MainInterface.presentInterface {
 				psmt.setString(5, model.getReceiveTotal());
 				psmt.setString(6, model.getReceiveType());
 				psmt.setString(7, new DateFormate().getDateWithTime());
+				psmt.setString(8, model.getReceiptNumber());
 			}
 			is = psmt.executeUpdate();
 			if (is == 1) {
@@ -109,6 +113,38 @@ public class MainPresenter implements MainInterface.presentInterface {
 			System.out.println(e.getMessage());
 		}
 		
+		if (psmt != null) {
+			try {
+				psmt.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public void getLastKey() {
+		StringBuilder sb = new StringBuilder();
+		sb.delete(0, sb.length());
+		
+		sb.append("SELECT RC_NO ");
+		sb.append("FROM RECEIPT ");
+		//sb.append("WHERE RC_DATE ='" + new DateFormate().getTime() + "'");
+		sb.append("ORDER BY RC_ID DESC LIMIT 1");
+		
+		connectionDB = new ConnectionDB();
+		try {
+			resultSet = connectionDB.dbQuery(sb.toString());
+			if (!resultSet.next()) {
+				resultSet.close();
+			}
+		} catch(Exception e) {
+			resultSet = null;
+			view.onFail("Fail : " + e.getMessage());
+		}
+		
+		view.onGenerateKey(resultSet);
 	}
 
 }

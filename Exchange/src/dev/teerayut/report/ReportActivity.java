@@ -46,6 +46,8 @@ public class ReportActivity extends JDialog implements ReportInterface.viewInter
     public static final int ID_CANCEL = 0;
     private int exitCode = ID_CANCEL;
     
+    private int dialogWidth, dialogHeight;
+    
     private JTable table;
     private JButton buttonExport;
 	private JScrollPane scrollPane;
@@ -109,14 +111,14 @@ public class ReportActivity extends JDialog implements ReportInterface.viewInter
 		
 		int columnsWidth = scrollPane.getSize().width;
 		
-		table.getColumnModel().getColumn(0).setPreferredWidth(columnsWidth / 18);
+		table.getColumnModel().getColumn(0).setPreferredWidth(columnsWidth / 15);
 		table.getColumnModel().getColumn(1).setPreferredWidth(columnsWidth / 4);
-		table.getColumnModel().getColumn(2).setPreferredWidth(columnsWidth / 10);
-		table.getColumnModel().getColumn(3).setPreferredWidth(columnsWidth / 10);
+		table.getColumnModel().getColumn(2).setPreferredWidth(columnsWidth / 11);
+		table.getColumnModel().getColumn(3).setPreferredWidth(columnsWidth / 11);
 		table.getColumnModel().getColumn(4).setPreferredWidth(columnsWidth / 8);
 		table.getColumnModel().getColumn(5).setPreferredWidth(columnsWidth / 8);
 		table.getColumnModel().getColumn(6).setPreferredWidth((columnsWidth / 5) - 35);
-		table.setRowHeight(40);
+		table.setRowHeight(38);
 		
 		DefaultTableCellRenderer centerRender = new DefaultTableCellRenderer();
 		centerRender.setHorizontalAlignment(JLabel.CENTER);
@@ -145,7 +147,7 @@ public class ReportActivity extends JDialog implements ReportInterface.viewInter
 		bottomPanel = new javax.swing.JPanel();
 		bottomPanel.setBounds(0, 1013, 1902, 20);
 		centerPanel = new javax.swing.JPanel();
-		centerPanel.setBounds(0, 131, 1902, 785);
+		
 		
 		lblCompanyName = new javax.swing.JLabel();
 		lblCoID = new javax.swing.JLabel();
@@ -168,6 +170,9 @@ public class ReportActivity extends JDialog implements ReportInterface.viewInter
         setTitle("Currency Exchange - Reports");
         new ScreenCenter().centreWindow(this);
         getContentPane().setLayout(null);
+        
+        dialogWidth = width - 100;
+        centerPanel.setBounds(0, 131, dialogWidth, 785);
         
         topPanel.setLayout(new java.awt.BorderLayout());
 		getContentPane().add(topPanel);
@@ -204,14 +209,6 @@ public class ReportActivity extends JDialog implements ReportInterface.viewInter
 		calendar.set(currentYear , currentMonth , currentDate);
 		date.setTime(calendar.getTimeInMillis());
 		
-		/*JDateChooser dateChooser = new JDateChooser();
-		dateChooser.setDateFormatString("yyyy-MM-dd");
-		dateChooser.setBounds(0, 0, 200, 41);
-		dateChooser.setPreferredSize(new java.awt.Dimension(200, 35));
-		toolPanel.add(dateChooser);
-		dateChooser.setFont(new Font("Angsana New", Font.PLAIN, 30));
-		dateChooser.setDate(date);*/
-		
 		DatePickerSettings dateSettings = new DatePickerSettings();
 		dateSettings.setFormatForDatesCommonEra("yyyy-MM-dd");
 		DatePicker datePicker1 = new DatePicker(dateSettings);
@@ -226,7 +223,6 @@ public class ReportActivity extends JDialog implements ReportInterface.viewInter
 		buttonReport.setBounds(210, 0, 200, 40);
 		buttonReport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//JOptionPane.showMessageDialog(ReportActivity.this, datePicker1.getDate());
 				dateReport = datePicker1.getDate().toString();
 				present.getReport(dateReport);
 			}

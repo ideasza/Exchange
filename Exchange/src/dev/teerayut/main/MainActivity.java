@@ -57,6 +57,7 @@ import javax.swing.table.JTableHeader;
 
 import dev.teerayut.model.CalculateModel;
 import dev.teerayut.model.CurrencyModel;
+import dev.teerayut.model.KeyModel;
 import dev.teerayut.report.ReportActivity;
 import dev.teerayut.settings.SettingsActivity;
 import dev.teerayut.show.showCurrencyActivity;
@@ -100,6 +101,9 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 	private JMenu edit, report;
 	private Preferrence prefs;
 
+	private static final String prefixName = "RWA";
+	private String receiptNumber = null;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -398,7 +402,8 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 					        calculateModelList.clear();
 					        return;
 						} else {
-							calculateModel = new CalculateModel(new DateFormate().getDate(), new DateFormate().getTime(), 
+							present.getLastKey();
+							calculateModel = new CalculateModel(receiptNumber, new DateFormate().getDate(), new DateFormate().getTime(), 
 									table.getValueAt(i, 0).toString(), table.getValueAt(i, 1).toString(), 
 									table.getValueAt(i, 2).toString(), table.getValueAt(i, 3).toString().replaceAll(",", ""), "buy");
 							calculateModelList.add(calculateModel);
@@ -588,7 +593,7 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 					        calculateModelList.clear();
 					        return;
 						} else {
-							calculateModel = new CalculateModel(new DateFormate().getDate(), new DateFormate().getTime(), 
+							calculateModel = new CalculateModel(receiptNumber, new DateFormate().getDate(), new DateFormate().getTime(), 
 									table.getValueAt(i, 0).toString(), table.getValueAt(i, 1).toString(), 
 									table.getValueAt(i, 2).toString(), table.getValueAt(i, 3).toString(), "sell");
 							
@@ -820,5 +825,41 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 			e.printStackTrace();
 			
 		}
+	}
+
+	@Override
+	public void onGenerateKey(ResultSet result) {
+		try {
+			if (result.next()) {
+				receiptNumber = generateKey(result.getString("RC_NO"));
+			} 
+		} catch (Exception e) {
+			receiptNumber = generateKey(null);
+			System.out.println("No number!" + receiptNumber);
+		}
+		
+	}
+	
+	private String generateKey(String lastkey) {
+		String[] key;
+		String prefixKey;
+		int running;
+		String generateNumber = null;
+		
+		if (lastkey != null) {
+			key = lastkey.split("-");
+			prefixKey = key[0];
+			running = Integer.parseInt(key[1]);
+			running++;
+			generateNumber = prefixKey + "-" + String.format("%04d", running);
+		} else {
+			running = 0000;
+			running++;
+			generateNumber = prefixName + new DateFormate().getDateForBill() + "-" + String.format("%04d", running);
+		}
+		
+		//System.out.println(String.format("%04d", running));
+		
+		return generateNumber;
 	}
 }

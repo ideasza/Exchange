@@ -2,6 +2,7 @@ package dev.teerayut.model;
 
 public class CalculateModel {
 
+	private String receiptNumber;
 	private String receiptDate;
 	private String receiptTime;
 	private String receiptCurrency;
@@ -10,7 +11,8 @@ public class CalculateModel {
 	private String receiptTotal;
 	private String receiptType;
 	
-	public CalculateModel(String date, String time, String currency, String rate, String amount, String total, String type) {
+	public CalculateModel(String number, String date, String time, String currency, String rate, String amount, String total, String type) {
+		this.receiptNumber = number;
 		this.receiptDate = date;
 		this.receiptTime = time;
 		this.receiptCurrency = currency;
@@ -63,5 +65,13 @@ public class CalculateModel {
 
 	public void setReceiptTime(String receiptTime) {
 		this.receiptTime = receiptTime;
+	}
+
+	public String getReceiptNumber() {
+		return receiptNumber;
+	}
+
+	public void setReceiptNumber(String receiptNumber) {
+		this.receiptNumber = receiptNumber;
 	}
 }

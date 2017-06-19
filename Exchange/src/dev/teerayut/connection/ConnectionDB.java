@@ -25,6 +25,7 @@ public class ConnectionDB {
 		try {
 			Class.forName("org.sqlite.JDBC");
 			conn = DriverManager.getConnection("jdbc:sqlite:" + Config.DB_PATH + Config.DB_FILE);
+			//conn.setAutoCommit(true);
 			/*DatabaseMetaData md = conn.getMetaData();
 			ResultSet rs = md.getTables(null, null, "%", null);
 			while(rs.next()) {
@@ -63,6 +64,17 @@ public class ConnectionDB {
 		} catch (SQLException e) {
 			resultSet = null;
 			dbCloseTransaction(stm, conn);
+		} finally {
+			if (stm != null) {
+				try {
+					stm.close();
+				} catch (SQLException e) {
+					try {
+			            if (conn != null)
+			            	conn.close();
+			        } catch (SQLException ex) {}  
+				}
+			}
 		}
 		return resultSet;
 	 }
@@ -113,6 +125,7 @@ public class ConnectionDB {
 		 try {
 			 conn = connect();
 			 pstmt = conn.prepareStatement(statement);
+			 conn.setAutoCommit(true);
 		 } catch (Exception e) {
 			 pstmt = null;
 			 dbCloseTransaction(stm, conn);

@@ -20,7 +20,7 @@ import dev.teerayut.utils.Convert;
 import dev.teerayut.utils.Preferrence;
 
 public class Receive {	
-	private String date, time;
+	private String date, time, number;
 	private float grandTotal = 0;
 	private DecimalFormat df = new DecimalFormat("#,###.00");
 	
@@ -44,6 +44,7 @@ public class Receive {
 		for(CalculateModel m : calModel) {
 			date = m.getReceiveDate().trim().toString();
 			time = m.getReceiptTime().trim().toString();
+			number = m.getReceiptNumber().toString();
 		}
 		printerService = new PrinterServiceClass();
 		PrinterOptionsClass p = new PrinterOptionsClass();
@@ -59,13 +60,17 @@ public class Receive {
         p.newLine();
         p.setText("Date : " +  date + " " + time);
         p.newLine();
+        p.setText("Receipt No. " + number);
+        p.newLine();
         p.alignCenter();
         p.setText(" - RECEIPT BOUGHT - ");
         p.newLine();
         p.alignLeft();
         p.addLineSeperator();
         p.newLine();
-        p.setText("Currency    Rate\tAmount\tTotal");
+        String headerItem = String.format("%-8s %6s %11s %11s", "Currency", "Rate", "Amount", "Total");
+        //p.setText("Currency    Rate\tAmount\tTotal");
+        p.setText(headerItem);
         p.newLine();
         p.addLineSeperator();
         p.newLine();
@@ -75,18 +80,28 @@ public class Receive {
        	 		currency= currency.substring(0, currency.indexOf(" ")); 
             }
         	
-        	p.setText(" " + currency 
+       	 	String item = String.format("%-8s %6.2f %11s %11s", 
+       	 		currency, Float.parseFloat(calModel.get(i).getReceiveRate().trim()), 
+       	 	new Convert().formatDecimal(Float.parseFloat(calModel.get(i).getReceiveAmount().trim())), 
+       	 	new Convert().formatDecimal(Float.parseFloat(calModel.get(i).getReceiveTotal().trim())));
+       	 	
+       	 	p.setText(item);
+        	/*p.setText(" " + currency 
         			+ "\t    " + new Convert().formatDecimal(Float.parseFloat(calModel.get(i).getReceiveRate().trim()))
         			+ "\t" + new Convert().formatDecimal(Float.parseFloat(calModel.get(i).getReceiveAmount().trim()))
         			+ "\t" + new Convert().formatDecimal(Float.parseFloat(calModel.get(i).getReceiveTotal().trim()))
-        	);
+        	);*/
         	
         	float total = Float.parseFloat(calModel.get(i).getReceiveTotal().trim());
         	grandTotal += total;
         	p.newLine();
         }
         p.newLine();
-	    p.setText("\t\tTotal" + "\t\t" + new Convert().formatDecimal(grandTotal));
+        p.addLineSeperator2();
+        p.newLine();
+        String totalItem = String.format("%-8s %6.2s %11s %11s", "Total", "", "", new Convert().formatDecimal(grandTotal));
+        p.setText(totalItem);
+	    //p.setText("\t\tTotal" + "\t\t" + new Convert().formatDecimal(grandTotal));
 	    p.newLine();
         p.addLineSeperator2();
         p.newLine();
