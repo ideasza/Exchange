@@ -54,6 +54,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.text.View;
 
 import dev.teerayut.model.CalculateModel;
 import dev.teerayut.model.CurrencyModel;
@@ -69,6 +70,11 @@ import dev.teerayut.utils.Preferrence;
 import dev.teerayut.utils.ScreenCenter;
 import dev.teerayut.utils.tableButtonRenderrer;
 import java.awt.event.MouseAdapter;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import javax.swing.JButton;
 
 public class MainActivity extends JFrame implements MouseListener, MainInterface.viewInterface {
 
@@ -307,29 +313,36 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 	    });
 	}
 	
+	private javax.swing.JLabel lblTotalBuy;
+	private javax.swing.JButton btnNewButtonBuyCancel;
 	private JPanel panelBuy() {
 		calculateModelList.clear();
 		javax.swing.JPanel panel = new javax.swing.JPanel();
 		javax.swing.JPanel panelTop = new javax.swing.JPanel();
 		javax.swing.JPanel panelCenter = new javax.swing.JPanel();
 		javax.swing.JPanel panelBottom = new javax.swing.JPanel();
-		javax.swing.JLabel lblTotal = new javax.swing.JLabel("0.00");
+		lblTotalBuy = new javax.swing.JLabel("0.00");
 		javax.swing.JButton buttonClear = new javax.swing.JButton("CLEAR");
 		javax.swing.JButton buttonOK = new javax.swing.JButton("OK");
 		javax.swing.JScrollPane tableScroll = new javax.swing.JScrollPane();
+		javax.swing.JTextField textField;
 		
 		model = new DefaultTableModel(data, columName);
 		javax.swing.JTable table = new javax.swing.JTable(model) {
 			public boolean isCellEditable(int rowIndex, int colIndex) {
-		    	if(colIndex == 0) {
-		    		return false;
-		    	} else if (colIndex == 1) {
-		    		return false;
-		    	} else if (colIndex == 3) {
-		    		return false;
-		    	} else {
-		    		return true;
-		    	}
+				if (cancel) {
+					return false;
+				} else {
+					if(colIndex == 0) {
+			    		return false;
+			    	} else if (colIndex == 1) {
+			    		return false;
+			    	} else if (colIndex == 3) {
+			    		return false;
+			    	} else {
+			    		return true;
+			    	}
+				}
 		    }
 		};
 		
@@ -339,9 +352,9 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 		    	int row = table.rowAtPoint(evt.getPoint());
 		        int col = table.columnAtPoint(evt.getPoint());
 		        if (table.getRowCount() > 0) {
-		        	if (col == 4) {
+		        	if (col == 4 && !cancel) {
 			        	model.removeRow(row);
-			        	calculate(table, lblTotal);
+			        	calculate(table, lblTotalBuy);
 			        }
 		        }
 		    }
@@ -354,7 +367,7 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 					int col = e.getColumn();
 					int row = e.getFirstRow();
 					float sum = (Float.parseFloat(table.getValueAt(row, 1).toString()) * Float.parseFloat(table.getValueAt(row, 2).toString()));
-					calculate(table, lblTotal);
+					calculate(table, lblTotalBuy);
 					if (col == 2) {
 						table.setValueAt(new Convert().formatDecimal(sum), row, 3);
 		            }
@@ -367,14 +380,14 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 		panelTop.setPreferredSize(new java.awt.Dimension((w - 400), 140));
 		panel.add(panelTop, java.awt.BorderLayout.NORTH);
 		
-		lblTotal.setOpaque(true);
-		lblTotal.setForeground(new Color(255, 255, 255));
-		lblTotal.setBackground(new Color(0, 51, 102));
-		lblTotal.setBorder(new TitledBorder(null, "Total", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
-		lblTotal.setFont(new Font("Angsana New", Font.BOLD, 100));
-		lblTotal.setPreferredSize(new java.awt.Dimension(380, 140));
-		lblTotal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-		panelTop.add(lblTotal, java.awt.BorderLayout.LINE_END);
+		lblTotalBuy.setOpaque(true);
+		lblTotalBuy.setForeground(new Color(255, 255, 255));
+		lblTotalBuy.setBackground(new Color(0, 51, 102));
+		lblTotalBuy.setBorder(new TitledBorder(null, "Total", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
+		lblTotalBuy.setFont(new Font("Angsana New", Font.BOLD, 100));
+		lblTotalBuy.setPreferredSize(new java.awt.Dimension(380, 140));
+		lblTotalBuy.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+		panelTop.add(lblTotalBuy, java.awt.BorderLayout.LINE_END);
 		
 		panelBottom.setLayout(null);
 		panelBottom.setPreferredSize(new java.awt.Dimension(w, 60));
@@ -426,13 +439,56 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 		buttonClear.setPreferredSize(new java.awt.Dimension(100, 40));
 		buttonClear.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		panelBottom.add(buttonClear);
+		
+		textField = new JTextField();
+		textField.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		textField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent evt) {
+				if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (textField.getText().toString().isEmpty()) {
+						final ImageIcon icon = new ImageIcon(getClass().getResource("/icon/fail32.png"));
+				        JOptionPane.showMessageDialog(null, "กรุณาใส่เลขที่ใบเสร็จที่ต้องการยกเลิก", "Alert", JOptionPane.ERROR_MESSAGE, icon);
+					} else {
+						
+						present.getReceipt(textField.getText().toString());
+					}
+				}
+			}
+		});
+		textField.setBounds(width - 700, 13, 200, 34);
+		panelBottom.add(textField);
+		textField.setColumns(10);
+		
+		JLabel lblNewLabel = new JLabel("ใส่เลขที่ใบเสร็จที่ต้องการยกเลิก");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setBounds(width - 900, 22, 190, 16);
+		panelBottom.add(lblNewLabel);
+		
+		btnNewButtonBuyCancel = new JButton("ยกเลิก");
+		btnNewButtonBuyCancel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int options = JOptionPane.showConfirmDialog (null, "คุณต้องการยกเลิกใบเสร็จเลขที่ " + receiptCancelNumber + " หรือไม่", 
+						"Warning", JOptionPane.YES_NO_OPTION);
+				if (options == JOptionPane.YES_OPTION) {
+					present.cancelReceipt(receiptCancelNumber, "Cenceled");
+				}
+			}
+		});
+		btnNewButtonBuyCancel.setBounds(width - 490, 13, 97, 34);
+		panelBottom.add(btnNewButtonBuyCancel);
+		btnNewButtonBuyCancel.setVisible(cancel);
+		
 		buttonClear.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				lblTotal.setText("0.00");
+				lblTotalBuy.setText("0.00");
 				for (int i = model.getRowCount() - 1; i >= 0; i--) {
 				    model.removeRow(i);
 				}
+				cancel = false;
+				btnNewButtonBuyCancel.setVisible(cancel);
 			}
 		});
 		
@@ -495,29 +551,36 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 	    lblTotal.setText(String.valueOf(new Convert().formatDecimal(sum)));
 	}
 	
+	javax.swing.JLabel lblTotalSell;
+	private javax.swing.JButton btnNewButtonSellCancel;
 	private JPanel panelSell() {
 		calculateModelList.clear();
 		javax.swing.JPanel panel = new javax.swing.JPanel();
 		javax.swing.JPanel panelTop = new javax.swing.JPanel();
 		javax.swing.JPanel panelCenter = new javax.swing.JPanel();
 		javax.swing.JPanel panelBottom = new javax.swing.JPanel();
-		javax.swing.JLabel lblTotal = new javax.swing.JLabel("0.00");
+		lblTotalSell = new javax.swing.JLabel("0.00");
 		javax.swing.JButton buttonClear = new javax.swing.JButton("CLEAR");
 		javax.swing.JButton buttonOK = new javax.swing.JButton("OK");
 		javax.swing.JScrollPane tableScroll = new javax.swing.JScrollPane();
+		javax.swing.JTextField textField;
 		
 		modelSell = new DefaultTableModel(data, columName);
 		javax.swing.JTable table = new javax.swing.JTable(modelSell) {
 			public boolean isCellEditable(int rowIndex, int colIndex) {
-		    	if(colIndex == 0) {
-		    		return false;
-		    	} else if (colIndex == 1) {
-		    		return false;
-		    	} else if (colIndex == 3) {
-		    		return false;
-		    	} else {
-		    		return true;
-		    	}
+				if (cancel) {
+					return false;
+				} else {
+					if(colIndex == 0) {
+			    		return false;
+			    	} else if (colIndex == 1) {
+			    		return false;
+			    	} else if (colIndex == 3) {
+			    		return false;
+			    	} else {
+			    		return true;
+			    	}
+				}
 		    }
 		};
 		
@@ -527,7 +590,7 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 		    	int row = table.rowAtPoint(evt.getPoint());
 		        int col = table.columnAtPoint(evt.getPoint());
 		        if (table.getRowCount() > 0) {
-		        	if (col == 4) {
+		        	if (col == 4 && !cancel) {
 		        		modelSell.removeRow(row);
 			        }
 		        }
@@ -544,7 +607,7 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 					float amount = Float.parseFloat(table.getValueAt(row, 2).toString());
 					float sum = (rate * amount);
 					
-					calculate(table, lblTotal);
+					calculate(table, lblTotalSell);
 					if (col == 2) {
 						table.setValueAt(new Convert().formatDecimal(sum), row, 3);
 		            }
@@ -558,14 +621,14 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 		panelTop.setPreferredSize(new java.awt.Dimension(w, 140));
 		panel.add(panelTop, java.awt.BorderLayout.NORTH);
 		
-		lblTotal.setOpaque(true);
-		lblTotal.setForeground(new Color(255, 255, 255));
-		lblTotal.setBackground(new Color(0, 51, 102));
-		lblTotal.setBorder(new TitledBorder(null, "Total", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
-		lblTotal.setFont(new Font("Angsana New", Font.BOLD, 100));
-		lblTotal.setPreferredSize(new java.awt.Dimension(380, 140));
-		lblTotal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-		panelTop.add(lblTotal, java.awt.BorderLayout.LINE_END);
+		lblTotalSell.setOpaque(true);
+		lblTotalSell.setForeground(new Color(255, 255, 255));
+		lblTotalSell.setBackground(new Color(0, 51, 102));
+		lblTotalSell.setBorder(new TitledBorder(null, "Total", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
+		lblTotalSell.setFont(new Font("Angsana New", Font.BOLD, 100));
+		lblTotalSell.setPreferredSize(new java.awt.Dimension(380, 140));
+		lblTotalSell.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+		panelTop.add(lblTotalSell, java.awt.BorderLayout.LINE_END);
 		
 		panelBottom.setLayout(null);
 		panelBottom.setPreferredSize(new java.awt.Dimension(w, 60));
@@ -617,13 +680,55 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 		buttonClear.setPreferredSize(new java.awt.Dimension(100, 40));
 		buttonClear.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		panelBottom.add(buttonClear);
+		
+		textField = new JTextField();
+		textField.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		textField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent evt) {
+				if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (textField.getText().toString().isEmpty()) {
+						final ImageIcon icon = new ImageIcon(getClass().getResource("/icon/fail32.png"));
+				        JOptionPane.showMessageDialog(null, "กรุณาใส่เลขที่ใบเสร็จที่ต้องการยกเลิก", "Alert", JOptionPane.ERROR_MESSAGE, icon);
+					} else {
+						present.getReceipt(textField.getText().toString());
+					}
+				}
+			}
+		});
+		textField.setBounds(width - 600, 13, 200, 34);
+		panelBottom.add(textField);
+		textField.setColumns(10);
+		
+		JLabel lblNewLabel = new JLabel("ใส่เลขที่ใบเสร็จที่ต้องการยกเลิก");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setBounds(width - 800, 22, 190, 16);
+		panelBottom.add(lblNewLabel);
+		
+		btnNewButtonSellCancel = new JButton("ยกเลิก");
+		btnNewButtonSellCancel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int options = JOptionPane.showConfirmDialog (null, "คุณต้องการยกเลิกใบเสร็จเลขที่ " + receiptCancelNumber + " หรือไม่", 
+						"Warning", JOptionPane.YES_NO_OPTION);
+				if (options == JOptionPane.YES_OPTION) {
+					present.cancelReceipt(receiptCancelNumber, "Cenceled");
+				}
+			}
+		});
+		btnNewButtonSellCancel.setBounds(width - 490, 13, 97, 34);
+		panelBottom.add(btnNewButtonSellCancel);
+		btnNewButtonSellCancel.setVisible(cancel);
+		
 		buttonClear.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				lblTotal.setText("0.00");
+				lblTotalSell.setText("0.00");
 				for (int i = modelSell.getRowCount() - 1; i >= 0; i--) {
 				    modelSell.removeRow(i);
 				}
+				cancel = false;
+				btnNewButtonSellCancel.setVisible(cancel);
 			}
 		});
 		
@@ -830,7 +935,7 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 	public void onGenerateKey(ResultSet result) {
 		try {
 			if (result.next()) {
-				receiptNumber = generateKey(result.getString("RC_NO"));
+				receiptNumber = generateKey(result.getString("RC_NUMBER"));
 			} 
 		} catch (Exception e) {
 			receiptNumber = generateKey(null);
@@ -856,9 +961,38 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 			running++;
 			generateNumber = prefixName + new DateFormate().getDateForBill() + "-" + String.format("%04d", running);
 		}
-		
-		//System.out.println(String.format("%04d", running));
-		
 		return generateNumber;
+	}
+
+	private String receiptCancelNumber;
+	private boolean cancel = false;
+	@Override
+	public void onCancelReceipt(List<CalculateModel> calculateList) {
+		cancel = true;
+		float sum = 0;
+		if (tabIndex == 0) {
+			btnNewButtonBuyCancel.setVisible(cancel);
+			for (CalculateModel calModel : calculateList) {
+				receiptCancelNumber = calModel.getReceiptNumber().toString();
+				model.addRow(new Object[] {calModel.getReceiveCurrency(), 
+						new Convert().formatDecimal(Float.parseFloat(calModel.getReceiveRate())), 
+						new Convert().formatDecimal(Float.parseFloat(calModel.getReceiveAmount())), 
+						new Convert().formatDecimal(Float.parseFloat(calModel.getReceiveTotal()))});
+				sum += Float.parseFloat(calModel.getReceiveTotal());
+			}
+			lblTotalBuy.setText(String.valueOf(new Convert().formatDecimal(sum)));
+		} else {
+			btnNewButtonSellCancel.setVisible(cancel);
+			for (CalculateModel calModel : calculateList) {
+				receiptCancelNumber = calModel.getReceiptNumber().toString();
+				modelSell.addRow(new Object[] {calModel.getReceiveCurrency(), 
+						new Convert().formatDecimal(Float.parseFloat(calModel.getReceiveRate())), 
+						new Convert().formatDecimal(Float.parseFloat(calModel.getReceiveAmount())), 
+						new Convert().formatDecimal(Float.parseFloat(calModel.getReceiveTotal()))});
+				sum += Float.parseFloat(calModel.getReceiveTotal());
+			}
+			lblTotalSell.setText(String.valueOf(new Convert().formatDecimal(sum)));
+		}
+	    
 	}
 }

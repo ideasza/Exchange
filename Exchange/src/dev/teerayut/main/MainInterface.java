@@ -8,15 +8,17 @@ import dev.teerayut.model.CalculateModel;
 public class MainInterface {
 
 	interface viewInterface{
+		void onCancelReceipt(List<CalculateModel> calculateList);
 		void onGenerateKey(ResultSet result);
 		void onSuccess(String success);
 		void onFail(String fail);
 	}
 	
 	interface presentInterface{
+		void getReceipt(String number);
+		void cancelReceipt(String number, String status);
 		void getLastKey();
 		ResultSet getAllCurrency(String type);
-		ResultSet getCompName();
 		void insertReceipt(List<CalculateModel> calculateList);
 	}
 }

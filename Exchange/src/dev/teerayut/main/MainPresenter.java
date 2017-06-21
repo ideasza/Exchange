@@ -17,7 +17,7 @@ public class MainPresenter implements MainInterface.presentInterface {
 	private PreparedStatement psmt;
 	private ConnectionDB connectionDB;
 	private MainInterface.viewInterface view;
-	
+	private CalculateModel calculateModel;
 	private List<CalculateModel> calList = new ArrayList<CalculateModel>();
 	
 	public MainPresenter(MainInterface.viewInterface view) {
@@ -47,30 +47,14 @@ public class MainPresenter implements MainInterface.presentInterface {
 		connectionDB = new ConnectionDB();
 		try {
 			resultSet = connectionDB.dbQuery(sb.toString());
+			return resultSet;
 		} catch(Exception e) {
 			resultSet = null;
 			view.onFail("Fail : " + e.getMessage());
+			connectionDB.closeAllTransaction();
 		}
-		
-		return resultSet;
-	}
-
-	@Override
-	public ResultSet getCompName() {
-		StringBuilder sb = new StringBuilder();
-		sb.delete(0, sb.length());
-		
-		sb.append("");
-		
-		connectionDB = new ConnectionDB();
-		try {
-			resultSet = connectionDB.dbQuery(sb.toString());
-		} catch(Exception e) {
-			resultSet = null;
-			view.onFail("Fail : " + e.getMessage());
-		}
-		
-		return resultSet;
+		connectionDB.closeAllTransaction();
+		return null;
 	}
 
 	@Override
@@ -79,10 +63,9 @@ public class MainPresenter implements MainInterface.presentInterface {
 		StringBuilder sb = new StringBuilder();
 		sb.delete(0, sb.length());
 		
-		sb.append("INSERT INTO RECEIPT (RC_DATE, RC_NAME, RC_RATE, RC_AMOUNT, RC_TOTAL, RC_TYPE, RC_CREATED_DATE, RC_NO) ");
+		sb.append("INSERT INTO RECEIPT (RC_DATE, RC_NAME, RC_RATE, RC_AMOUNT, RC_TOTAL, RC_TYPE, RC_CREATED_DATE, RC_NUMBER) ");
 		sb.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 		
-		System.out.println(sb.toString());
 		connectionDB = new ConnectionDB();
 		int is = 0;
 		try {
@@ -103,21 +86,14 @@ public class MainPresenter implements MainInterface.presentInterface {
 				new Receive().printReceipt(calList);
 				view.onSuccess("บันทึกรายการซื้อขายแล้ว");
 				calculateList.clear();
+				connectionDB.closeAllTransaction();
 			} else {
 				view.onFail("ไม่สามารถบันทึกข้อมูลได้");
 			}
 		} catch(Exception e) {
 			view.onFail("Insert receipt : " + e.getMessage());
 			System.out.println(e.getMessage());
-		}
-		
-		if (psmt != null) {
-			try {
-				psmt.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			connectionDB.closeAllTransaction();
 		}
 	}
 
@@ -126,7 +102,7 @@ public class MainPresenter implements MainInterface.presentInterface {
 		StringBuilder sb = new StringBuilder();
 		sb.delete(0, sb.length());
 		
-		sb.append("SELECT RC_NO ");
+		sb.append("SELECT RC_NUMBER ");
 		sb.append("FROM RECEIPT ");
 		//sb.append("WHERE RC_DATE ='" + new DateFormate().getTime() + "'");
 		sb.append("ORDER BY RC_ID DESC LIMIT 1");
@@ -134,15 +110,46 @@ public class MainPresenter implements MainInterface.presentInterface {
 		connectionDB = new ConnectionDB();
 		try {
 			resultSet = connectionDB.dbQuery(sb.toString());
-			if (!resultSet.next()) {
-				resultSet.close();
-			}
+			view.onGenerateKey(resultSet);
 		} catch(Exception e) {
 			resultSet = null;
 			view.onFail("Fail : " + e.getMessage());
 		}
+		connectionDB.closeAllTransaction();
+	}
+
+	@Override
+	public void getReceipt(String number) {
+		StringBuilder sb = new StringBuilder();
+		sb.delete(0, sb.length());
 		
-		view.onGenerateKey(resultSet);
+		sb.append("SELECT * FROM RECEIPT ");
+		sb.append("WHERE RC_NUMBER ='" + number + "'");
+		
+		connectionDB = new ConnectionDB();
+		try {
+			calList.clear();
+			resultSet = connectionDB.dbQuery(sb.toString());
+			while (resultSet.next()) {
+				calculateModel = new CalculateModel(resultSet.getString("RC_NUMBER"), 
+						resultSet.getString("RC_DATE"), "", resultSet.getString("RC_NAME"), 
+						resultSet.getString("RC_RATE"), resultSet.getString("RC_AMOUNT"), 
+						resultSet.getString("RC_TOTAL"), resultSet.getString("RC_TYPE"));
+				calList.add(calculateModel);
+			}
+			view.onCancelReceipt(calList);
+		} catch(Exception e) {
+			resultSet = null;
+			view.onFail("getReceipt : " + e.getMessage());
+		}
+		connectionDB.closeAllTransaction();
+	}
+
+	@Override
+	public void cancelReceipt(String number, String status) {
+		StringBuilder sb = new StringBuilder();
+		sb.delete(0, sb.length());
+		
 	}
 
 }

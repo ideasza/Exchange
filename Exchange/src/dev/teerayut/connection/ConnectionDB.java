@@ -64,18 +64,8 @@ public class ConnectionDB {
 		} catch (SQLException e) {
 			resultSet = null;
 			dbCloseTransaction(stm, conn);
-		} finally {
-			if (stm != null) {
-				try {
-					stm.close();
-				} catch (SQLException e) {
-					try {
-			            if (conn != null)
-			            	conn.close();
-			        } catch (SQLException ex) {}  
-				}
-			}
 		}
+		
 		return resultSet;
 	 }
 	 
@@ -154,4 +144,18 @@ public class ConnectionDB {
 	            	conn.close();
 	        } catch (SQLException e) {}  
 	    }
+	 
+	 public void closeAllTransaction() {
+		 try {
+		        if (stm != null)
+		            stm.close();
+		        else if (pstmt != null)
+		        	pstmt.close();
+		    }  catch (SQLException e) {
+		        try {
+		            if (conn != null)
+		            	conn.close();
+		        } catch (SQLException ex) {}  
+		    }
+	 }
 }
