@@ -137,17 +137,20 @@ public class MainPresenter implements MainInterface.presentInterface {
 						resultSet.getString("RC_RATE"), resultSet.getString("RC_AMOUNT"), 
 						resultSet.getString("RC_TOTAL"), resultSet.getString("RC_TYPE"));
 				calList.add(calculateModel);
+				
+				RCStatus = resultSet.getString("RC_STATUS");
 			}
 			
-			/*if (RCStatus.equals("Canceled")) {
-				view.onFail("ใบเสร็จเลขที่ " + number + " ถูกยกเลิกแล้ว");
-				connectionDB.closeAllTransaction();
-			} else {
+			
+			/*if (RCStatus.isEmpty()) {
 				view.onCancelReceipt(calList);
 				connectionDB.closeAllTransaction();
+			} else {
+				view.onFail("ใบเสร็จเลขที่ " + number + " ถูกยกเลิกแล้ว");
+				connectionDB.closeAllTransaction();
 			}*/
-			view.onCancelReceipt(calList);
-			connectionDB.closeAllTransaction();
+			//view.onCancelReceipt(calList);
+			//connectionDB.closeAllTransaction();
 		} catch(Exception e) {
 			resultSet = null;
 			view.onFail("getReceipt : " + e.getMessage());
