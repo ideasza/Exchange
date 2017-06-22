@@ -346,6 +346,12 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 		    }
 		};
 		
+		if (cancel) {
+			for (int i = model.getRowCount() - 1; i >= 0; i--) {
+				model.removeRow(i);
+			}
+		}
+		
 		table.addMouseListener(new java.awt.event.MouseAdapter() {
 		    @Override
 		    public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -450,7 +456,6 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 						final ImageIcon icon = new ImageIcon(getClass().getResource("/icon/fail32.png"));
 				        JOptionPane.showMessageDialog(null, "กรุณาใส่เลขที่ใบเสร็จที่ต้องการยกเลิก", "Alert", JOptionPane.ERROR_MESSAGE, icon);
 					} else {
-						
 						present.getReceipt(textField.getText().toString());
 					}
 				}
@@ -469,13 +474,23 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 		btnNewButtonBuyCancel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				int row = table.getRowCount();
 				int options = JOptionPane.showConfirmDialog (null, "คุณต้องการยกเลิกใบเสร็จเลขที่ " + receiptCancelNumber + " หรือไม่", 
 						"Warning", JOptionPane.YES_NO_OPTION);
 				if (options == JOptionPane.YES_OPTION) {
-					present.cancelReceipt(receiptCancelNumber, "Cenceled");
+					for (int i = 0; i < row; i++) {
+						calculateModel = new CalculateModel(receiptNumber, new DateFormate().getDate(), new DateFormate().getTime(), 
+								table.getValueAt(i, 0).toString(), table.getValueAt(i, 1).toString(), 
+								table.getValueAt(i, 2).toString(), table.getValueAt(i, 3).toString().replaceAll(",", ""), "buy");
+						calculateModelList.add(calculateModel);
+					}
+					present.cancelReceipt(receiptCancelNumber, "Canceled", calculateModelList);
+					textField.setText("");
+					btnNewButtonBuyCancel.setVisible(false);
 				}
 			}
 		});
+		
 		btnNewButtonBuyCancel.setBounds(width - 490, 13, 97, 34);
 		panelBottom.add(btnNewButtonBuyCancel);
 		btnNewButtonBuyCancel.setVisible(cancel);
@@ -584,6 +599,12 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 		    }
 		};
 		
+		if (cancel) {
+			for (int i = modelSell.getRowCount() - 1; i >= 0; i--) {
+			    modelSell.removeRow(i);
+			}
+		}
+		
 		table.addMouseListener(new java.awt.event.MouseAdapter() {
 		    @Override
 		    public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -658,7 +679,6 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 							calculateModel = new CalculateModel(receiptNumber, new DateFormate().getDate(), new DateFormate().getTime(), 
 									table.getValueAt(i, 0).toString(), table.getValueAt(i, 1).toString(), 
 									table.getValueAt(i, 2).toString(), table.getValueAt(i, 3).toString(), "sell");
-							
 							calculateModelList.add(calculateModel);
 						}
 					}
@@ -709,10 +729,19 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 		btnNewButtonSellCancel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				int row = table.getRowCount();
 				int options = JOptionPane.showConfirmDialog (null, "คุณต้องการยกเลิกใบเสร็จเลขที่ " + receiptCancelNumber + " หรือไม่", 
 						"Warning", JOptionPane.YES_NO_OPTION);
 				if (options == JOptionPane.YES_OPTION) {
-					present.cancelReceipt(receiptCancelNumber, "Cenceled");
+					for (int i = 0; i < row; i++) {
+						calculateModel = new CalculateModel(receiptNumber, new DateFormate().getDate(), new DateFormate().getTime(), 
+								table.getValueAt(i, 0).toString(), table.getValueAt(i, 1).toString(), 
+								table.getValueAt(i, 2).toString(), table.getValueAt(i, 3).toString(), "sell");
+						calculateModelList.add(calculateModel);
+					}
+					present.cancelReceipt(receiptCancelNumber, "Canceled", calculateModelList);
+					textField.setText("");
+					btnNewButtonSellCancel.setVisible(false);
 				}
 			}
 		});
@@ -766,6 +795,7 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 		table.setCellSelectionEnabled(true);
 		table.changeSelection(0, 2, false, false);
 		table.requestFocus();
+		
 		DefaultTableCellRenderer centerRender = new DefaultTableCellRenderer();
 		centerRender.setHorizontalAlignment(JLabel.CENTER);
 		table.getColumnModel().getColumn(1).setCellRenderer(centerRender);

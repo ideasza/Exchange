@@ -16,7 +16,7 @@ public class MainInterface {
 	
 	interface presentInterface{
 		void getReceipt(String number);
-		void cancelReceipt(String number, String status);
+		void cancelReceipt(String number, String status, List<CalculateModel> calculateList);
 		void getLastKey();
 		ResultSet getAllCurrency(String type);
 		void insertReceipt(List<CalculateModel> calculateList);

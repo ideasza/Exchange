@@ -116,6 +116,75 @@ public class Receive {
 		printerService.printBytes(printerName, cutPaper);
 	}
 	
+	public void printReceiptCancel(List<CalculateModel> calModel) {
+		for(CalculateModel m : calModel) {
+			date = m.getReceiveDate().trim().toString();
+			time = m.getReceiptTime().trim().toString();
+			number = m.getReceiptNumber().toString();
+		}
+		printerService = new PrinterServiceClass();
+		PrinterOptionsClass p = new PrinterOptionsClass();
+		
+        p.resetAll();
+        p.initialize();
+        p.newLine();
+        p.alignCenter();
+        p.setText((prefs.getPreferrence("compName") != null)? prefs.getPreferrence("compName") : "Company Name");
+        p.newLine();
+        p.alignCenter();
+        p.setText((prefs.getPreferrence("compID") != null)? "เลขประจำตัวผู้เสียภาษี : " + prefs.getPreferrence("compID") : "Company License");
+        p.newLine();
+        p.setText("Date : " +  date + " " + time);
+        p.newLine();
+        p.setText("Receipt No. " + number +" (Calceled)");
+        p.newLine();
+        p.alignCenter();
+        p.setText(" - COPY - ");
+        p.newLine();
+        p.alignLeft();
+        p.addLineSeperator();
+        p.newLine();
+        String headerItem = String.format("%-8s %6s %11s %11s", "Currency", "Rate", "Amount", "Total");
+        p.setText(headerItem);
+        p.newLine();
+        p.addLineSeperator();
+        p.newLine();
+        for (int i = 0 ; i < calModel.size(); i++) {
+        	String currency = calModel.get(i).getReceiveCurrency().trim();
+       	 	if(currency.contains(" ")){
+       	 		currency= currency.substring(0, currency.indexOf(" ")); 
+            }
+        	
+       	 	String item = String.format("%-8s %6.2f %11s %11s", 
+       	 		currency, Float.parseFloat(calModel.get(i).getReceiveRate().trim()), 
+       	 	new Convert().formatDecimal(Float.parseFloat(calModel.get(i).getReceiveAmount().trim())), 
+       	 	new Convert().formatDecimal(Float.parseFloat(calModel.get(i).getReceiveTotal().trim())));
+       	 	
+       	 	p.setText(item);
+        	
+        	float total = Float.parseFloat(calModel.get(i).getReceiveTotal().trim());
+        	grandTotal += total;
+        	p.newLine();
+        }
+        p.newLine();
+        p.addLineSeperator2();
+        p.newLine();
+        String totalItem = String.format("%-8s %6.2s %11s %11s", "Total", "", "", new Convert().formatDecimal(grandTotal));
+        p.setText(totalItem);
+	    p.newLine();
+        p.addLineSeperator2();
+        p.newLine();
+        p.alignCenter();
+        p.setText(" - THANK YOU - ");
+        p.feed((byte)3);
+        p.finit();
+
+        feedPrinter(p.finalCommandSet());
+        
+        byte[] cutPaper = new byte[] {27, 105};
+		printerService.printBytes(printerName, cutPaper);
+	}
+	
 	private static boolean feedPrinter(String p) {
 		System.out.println(p);
         try {
