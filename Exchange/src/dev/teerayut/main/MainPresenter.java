@@ -118,6 +118,7 @@ public class MainPresenter implements MainInterface.presentInterface {
 		connectionDB.closeAllTransaction();
 	}
 
+	private String RCStatus = null;
 	@Override
 	public void getReceipt(String number) {
 		StringBuilder sb = new StringBuilder();
@@ -137,19 +138,50 @@ public class MainPresenter implements MainInterface.presentInterface {
 						resultSet.getString("RC_TOTAL"), resultSet.getString("RC_TYPE"));
 				calList.add(calculateModel);
 			}
+			
+			/*if (RCStatus.equals("Canceled")) {
+				view.onFail("ใบเสร็จเลขที่ " + number + " ถูกยกเลิกแล้ว");
+				connectionDB.closeAllTransaction();
+			} else {
+				view.onCancelReceipt(calList);
+				connectionDB.closeAllTransaction();
+			}*/
 			view.onCancelReceipt(calList);
+			connectionDB.closeAllTransaction();
 		} catch(Exception e) {
 			resultSet = null;
 			view.onFail("getReceipt : " + e.getMessage());
 		}
-		connectionDB.closeAllTransaction();
 	}
 
 	@Override
-	public void cancelReceipt(String number, String status) {
+	public void cancelReceipt(String number, String status, List<CalculateModel> calculateList) {
+		this.calList = calculateList;
 		StringBuilder sb = new StringBuilder();
 		sb.delete(0, sb.length());
 		
+		sb.append("UPDATE RECEIPT ");
+		sb.append("SET RC_STATUS = ? ");
+		sb.append("WHERE RC_NUMBER = ? ");
+		
+		connectionDB = new ConnectionDB();
+		int is = 0;
+		try {
+			psmt = connectionDB.dbInsert(sb.toString());
+			psmt.setString(1, status);
+			psmt.setString(2, number);
+			is = psmt.executeUpdate();
+			if (is == 1) {
+				new Receive().printReceiptCancel(calList);
+				view.onSuccess("ยกเลิกใบเสร็จเลขที่ " + number + " แล้ว");
+				connectionDB.closeAllTransaction();
+			} else {
+				view.onFail("ไม่สามารถบันทึกข้อมูลได้");
+			}
+		} catch (Exception e) {
+			view.onFail("Cancel receipt : " + e.getMessage());
+			System.out.println(e.getMessage());
+			connectionDB.closeAllTransaction();
+		}
 	}
-
 }
