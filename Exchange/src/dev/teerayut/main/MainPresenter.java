@@ -63,8 +63,8 @@ public class MainPresenter implements MainInterface.presentInterface {
 		StringBuilder sb = new StringBuilder();
 		sb.delete(0, sb.length());
 		
-		sb.append("INSERT INTO RECEIPT (RC_DATE, RC_NAME, RC_RATE, RC_AMOUNT, RC_TOTAL, RC_TYPE, RC_CREATED_DATE, RC_NUMBER) ");
-		sb.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+		sb.append("INSERT INTO RECEIPT (RC_DATE, RC_NAME, RC_RATE, RC_AMOUNT, RC_TOTAL, RC_TYPE, RC_CREATED_DATE, RC_NUMBER, RC_STATUS) ");
+		sb.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		
 		connectionDB = new ConnectionDB();
 		int is = 0;
@@ -80,6 +80,7 @@ public class MainPresenter implements MainInterface.presentInterface {
 				psmt.setString(6, model.getReceiveType());
 				psmt.setString(7, new DateFormate().getDateWithTime());
 				psmt.setString(8, model.getReceiptNumber());
+				psmt.setString(9, "Original");
 			}
 			is = psmt.executeUpdate();
 			if (is == 1) {
