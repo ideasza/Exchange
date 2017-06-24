@@ -540,8 +540,9 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 		table.setFont(new Font("Angsana New", Font.PLAIN, 40));
 		tableScroll.setViewportView(table);
 		table.setCellSelectionEnabled(true);
-		table.changeSelection(0, 2, false, false);
 		table.requestFocus();
+		table.changeSelection(0, 2, true, false);
+		
 		
 		DefaultTableCellRenderer centerRender = new DefaultTableCellRenderer();
 		centerRender.setHorizontalAlignment(JLabel.CENTER);

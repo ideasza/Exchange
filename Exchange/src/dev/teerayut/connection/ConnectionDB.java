@@ -102,7 +102,7 @@ public class ConnectionDB {
 		        }
 		     } catch (SQLException e) {
 		        result = "0;"+e.toString();
-			}
+			 }
 			} catch (SQLException e) {
 				result = "0;"+e.toString();
 				resultSet = null;
