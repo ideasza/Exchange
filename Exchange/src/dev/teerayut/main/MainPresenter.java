@@ -80,7 +80,7 @@ public class MainPresenter implements MainInterface.presentInterface {
 				psmt.setString(6, model.getReceiveType());
 				psmt.setString(7, new DateFormate().getDateWithTime());
 				psmt.setString(8, model.getReceiptNumber());
-				psmt.setString(9, "Original");
+				psmt.setString(9, "Print");
 			}
 			is = psmt.executeUpdate();
 			if (is == 1) {
@@ -143,13 +143,13 @@ public class MainPresenter implements MainInterface.presentInterface {
 			}
 			
 			
-			/*if (RCStatus.isEmpty()) {
+			if (RCStatus.equals("Print")) {
 				view.onCancelReceipt(calList);
 				connectionDB.closeAllTransaction();
 			} else {
 				view.onFail("ใบเสร็จเลขที่ " + number + " ถูกยกเลิกแล้ว");
 				connectionDB.closeAllTransaction();
-			}*/
+			}
 			//view.onCancelReceipt(calList);
 			//connectionDB.closeAllTransaction();
 		} catch(Exception e) {
