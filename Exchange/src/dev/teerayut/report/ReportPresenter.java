@@ -1,5 +1,6 @@
 package dev.teerayut.report;
 
+import java.awt.Color;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.border.LineBorder;
 
 import dev.teerayut.connection.ConnectionDB;
 import dev.teerayut.model.ReceiptModel;
@@ -105,7 +107,7 @@ public class ReportPresenter implements ReportInterface.presentInterface{
             WritableCellFormat cellFormat1 = new WritableCellFormat(fontHeader);
             cellFormat1.setAlignment(Alignment.CENTRE);
             cellFormat1.setVerticalAlignment(VerticalAlignment.CENTRE);
-            cellFormat1.setBackground(Colour.WHITE);
+            //cellFormat1.setBackground(Colour.WHITE);
             
             //*** Data ***//
             WritableCellFormat cellFormat2 = new WritableCellFormat(fontReport);
@@ -157,7 +159,7 @@ public class ReportPresenter implements ReportInterface.presentInterface{
     	    ws1.addCell(new Label(6,1,"Total", cellFormat1));
     	    
     	    ws1.setColumnView(7, 20);
-    	    ws1.addCell(new Label(6,1,"Note", cellFormat1));
+    	    ws1.addCell(new Label(7,1,"Note", cellFormat1));
     	    
     	    for (int i = 0; i < listReport.size(); i++) {
     	    	ReceiptModel m = listReport.get(i);
@@ -193,6 +195,7 @@ public class ReportPresenter implements ReportInterface.presentInterface{
 		}
 		view.onSuccess("ส่งออกรายงานสำเร็จ");
 		try {
+			listReport.clear();
 			Desktop.getDesktop().open(new File(Config.REPORT_PATH));
 		} catch (IOException e) {
 			final ImageIcon icon = new ImageIcon(getClass().getResource("/icon/fail32.png"));

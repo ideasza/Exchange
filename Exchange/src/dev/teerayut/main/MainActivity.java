@@ -461,13 +461,13 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 				}
 			}
 		});
-		textField.setBounds(width - 700, 13, 200, 34);
+		textField.setBounds(width - 650, 13, 200, 34);
 		panelBottom.add(textField);
 		textField.setColumns(10);
 		
 		JLabel lblNewLabel = new JLabel("ใส่เลขที่ใบเสร็จที่ต้องการยกเลิก");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(width - 900, 22, 190, 16);
+		lblNewLabel.setBounds(width - 850, 22, 190, 16);
 		panelBottom.add(lblNewLabel);
 		
 		btnNewButtonBuyCancel = new JButton("ยกเลิก");
@@ -479,7 +479,7 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 						"Warning", JOptionPane.YES_NO_OPTION);
 				if (options == JOptionPane.YES_OPTION) {
 					for (int i = 0; i < row; i++) {
-						calculateModel = new CalculateModel(receiptNumber, new DateFormate().getDate(), new DateFormate().getTime(), 
+						calculateModel = new CalculateModel(receiptCancelNumber, new DateFormate().getDate(), new DateFormate().getTime(), 
 								table.getValueAt(i, 0).toString(), table.getValueAt(i, 1).toString(), 
 								table.getValueAt(i, 2).toString(), table.getValueAt(i, 3).toString().replaceAll(",", ""), "buy");
 						calculateModelList.add(calculateModel);
@@ -491,7 +491,7 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 			}
 		});
 		
-		btnNewButtonBuyCancel.setBounds(width - 490, 13, 97, 34);
+		btnNewButtonBuyCancel.setBounds(width - 450, 13, 97, 34);
 		panelBottom.add(btnNewButtonBuyCancel);
 		btnNewButtonBuyCancel.setVisible(cancel);
 		
@@ -735,7 +735,7 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 						"Warning", JOptionPane.YES_NO_OPTION);
 				if (options == JOptionPane.YES_OPTION) {
 					for (int i = 0; i < row; i++) {
-						calculateModel = new CalculateModel(receiptNumber, new DateFormate().getDate(), new DateFormate().getTime(), 
+						calculateModel = new CalculateModel(receiptCancelNumber, new DateFormate().getDate(), new DateFormate().getTime(), 
 								table.getValueAt(i, 0).toString(), table.getValueAt(i, 1).toString(), 
 								table.getValueAt(i, 2).toString(), table.getValueAt(i, 3).toString(), "sell");
 						calculateModelList.add(calculateModel);

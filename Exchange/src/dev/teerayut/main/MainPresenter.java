@@ -146,7 +146,7 @@ public class MainPresenter implements MainInterface.presentInterface {
 			if (RCStatus.equals("Print")) {
 				view.onCancelReceipt(calList);
 				connectionDB.closeAllTransaction();
-			} else {
+			} else if (RCStatus.equals("Canceled")) {
 				view.onFail("ใบเสร็จเลขที่ " + number + " ถูกยกเลิกแล้ว");
 				connectionDB.closeAllTransaction();
 			}
