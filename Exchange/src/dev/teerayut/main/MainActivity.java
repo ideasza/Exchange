@@ -986,7 +986,7 @@ public class MainActivity extends JFrame implements MouseListener, MainInterface
 			prefixKey = key[0];
 			running = Integer.parseInt(key[1]);
 			running++;
-			generateNumber = prefixKey + "-" + String.format("%04d", running);
+			generateNumber = prefixName + new DateFormate().getDateForBill() + "-" + String.format("%04d", running);
 		} else {
 			running = 0000;
 			running++;

@@ -67,6 +67,7 @@ public class MainPresenter implements MainInterface.presentInterface {
 		sb.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		
 		connectionDB = new ConnectionDB();
+		
 		int is = 0;
 		try {
 			psmt = connectionDB.dbInsert(sb.toString());
@@ -81,8 +82,8 @@ public class MainPresenter implements MainInterface.presentInterface {
 				psmt.setString(7, new DateFormate().getDateWithTime());
 				psmt.setString(8, model.getReceiptNumber());
 				psmt.setString(9, "Print");
+				is = psmt.executeUpdate();
 			}
-			is = psmt.executeUpdate();
 			if (is == 1) {
 				new Receive().printReceipt(calList);
 				view.onSuccess("บันทึกรายการซื้อขายแล้ว");
